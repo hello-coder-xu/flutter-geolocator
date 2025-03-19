@@ -1,3 +1,15 @@
+此项目fork flutter_geolocator  v13.0.2版本
+
+目的是为了解决firebase 上的崩溃问题 ：https://591.to/7kMs
+
+相对flutter_geolocator  v13.0.2的改动查看 [PR](https://591.to/7kM9)
+
+这个PR很早就有了，与现在代码间隔太久，里面其他代码已经过时，因此重新fork官方版本修改
+
+
+
+
+
 # Flutter geolocator plugin
 
 The Flutter geolocator plugin is built following the federated plugin architecture. A detailed explanation of the federated plugin concept can be found in the [Flutter documentation](https://flutter.dev/docs/development/packages-and-plugins/developing-packages#federated-plugins). This means the geolocator plugin is separated into the following packages:
