@@ -32,6 +32,7 @@ public class PermissionManager
   @Nullable private Activity activity;
   @Nullable private ErrorCallback errorCallback;
   @Nullable private PermissionResultCallback resultCallback;
+  private boolean hasReplied = false;
 
   public static synchronized PermissionManager getInstance() {
       if (permissionManagerInstance == null) {
@@ -113,6 +114,7 @@ public class PermissionManager
     this.errorCallback = errorCallback;
     this.resultCallback = resultCallback;
     this.activity = activity;
+    hasReplied = false;
 
     ActivityCompat.requestPermissions(
         activity, permissionsToRequest.toArray(new String[0]), PERMISSION_REQUEST_CODE);
@@ -123,6 +125,10 @@ public class PermissionManager
       int requestCode, String[] permissions, int[] grantResults) {
     if (requestCode != PERMISSION_REQUEST_CODE) {
       return false;
+    }
+
+    if (hasReplied) {
+        return false;
     }
 
     if (this.activity == null) {
@@ -188,7 +194,8 @@ public class PermissionManager
     }
 
     if (this.resultCallback != null) {
-      this.resultCallback.onResult(locationPermission);
+        hasReplied = true;
+        this.resultCallback.onResult(locationPermission);
     }
 
     return true;
