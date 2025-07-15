@@ -155,7 +155,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     try {
       permissionManager.requestPermission(
           activity,
-          (LocationPermission permission) -> handlePermissionSuccess(result, isResultCalled),
+          (LocationPermission permission) -> handlePermissionSuccess(result, isResultCalled, permission),
           (ErrorCodes errorCode) -> handleError(result, isResultCalled, errorCode)
       );
     } catch (PermissionUndefinedException e) {
@@ -164,7 +164,7 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     }
   }
 
-  private void handlePermissionSuccess(MethodChannel.Result result, boolean[] isResultCalled) {
+  private void handlePermissionSuccess(MethodChannel.Result result, boolean[] isResultCalled, LocationPermission permission) {
       if (!isResultCalled[0]) {
           // 设置标志为已调用
           isResultCalled[0] = true;
