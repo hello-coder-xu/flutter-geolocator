@@ -149,16 +149,35 @@ class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
   }
 
   private void onRequestPermission(MethodChannel.Result result) {
+    // 局部变量，使用数组来允许在匿名内部类中修改其值
+    // 尝试修复：java.lang.IllegalStateException - Reply already submitted
+    final boolean[] isResultCalled = {false};
     try {
       permissionManager.requestPermission(
           activity,
-          (LocationPermission permission) -> result.success(permission.toInt()),
-          (ErrorCodes errorCode) ->
-              result.error(errorCode.toString(), errorCode.toDescription(), null));
+          (LocationPermission permission) -> handlePermissionSuccess(result, isResultCalled),
+          (ErrorCodes errorCode) -> handleError(result, isResultCalled, errorCode)
+      );
     } catch (PermissionUndefinedException e) {
       ErrorCodes errorCode = ErrorCodes.permissionDefinitionsNotFound;
-      result.error(errorCode.toString(), errorCode.toDescription(), null);
+      handleError(result, isResultCalled, errorCode);
     }
+  }
+
+  private void handlePermissionSuccess(MethodChannel.Result result, boolean[] isResultCalled) {
+      if (!isResultCalled[0]) {
+          // 设置标志为已调用
+          isResultCalled[0] = true;
+          result.success(permission.toInt());
+      }
+  }
+
+  private void handleError(MethodChannel.Result result, boolean[] isResultCalled, ErrorCodes errorCode) {
+      if (!isResultCalled[0]) {
+          // 设置标志为已调用
+          isResultCalled[0] = true;
+          result.error(errorCode.toString(), errorCode.toDescription(), null);
+      }
   }
 
   private void getLocationAccuracy(MethodChannel.Result result, Context context) {
